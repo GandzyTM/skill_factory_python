@@ -39,7 +39,7 @@ def main():
                 if self.is_single:
                     return f"<{self.tag} {attrs}/>\n"
                 else:
-                    return f"<{self.tag} {attrs}>{self.text}</{self.tag}>\n"
+                    return f"<{self.tag}{attrs}>{self.text}</{self.tag}>\n"
 
         def __exit__(self, *args, **kwargs):
             pass
