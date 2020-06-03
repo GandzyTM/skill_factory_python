@@ -1,7 +1,7 @@
 def main():
     import json
 
-    with open("data/users.txt", 'r') as file:
+    with open("../data/users.txt", 'r') as file:
         users = json.load(file)
         first_user = None
         last_user = None

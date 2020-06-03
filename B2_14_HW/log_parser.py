@@ -5,7 +5,7 @@ def main():
 
     # TODO Сколько запросов к серверу сделано с IP адреса 79.136.245.135?
     import collections
-    FILENAME = "data/dummy-access.log"
+    FILENAME = "../data/dummy-access.log"
     ipCounter = collections.Counter()
     fp = open(FILENAME)
     for line in fp:

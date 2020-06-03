@@ -1,7 +1,7 @@
 import json
 import collections
 
-FILE_NAME1 = "data/data_3000.json"
+FILE_NAME1 = "../data/data_3000.json"
 counter = collections.Counter()
 
 
