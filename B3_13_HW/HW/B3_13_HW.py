@@ -1,4 +1,4 @@
-def main():
+def main(output=None):
     class Tag:
         def __init__(self, tag, is_single=False, klass=None, **kwargs):
             self.tag = tag
@@ -64,8 +64,12 @@ def main():
             ending = "</html>"
             return opening + internal + ending
 
-        def __exit__(self, *args):
-            return self
+        def __exit__(self, *args, **kwargs):
+            if self.output is not None:
+                with open(self.output, "a") as fp:
+                    fp.write(str(self))
+            else:
+                print(self)
 
     class TopLevelTag:
         def __init__(self, tag):
@@ -90,7 +94,7 @@ def main():
         def __exit__(self, *args):
             return self
 
-    with HTML(output=None) as doc:
+    with HTML(output=output) as doc:
         with TopLevelTag("head") as head:
             with Tag("title") as title:
                 title.text = "hello"
@@ -117,4 +121,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main("../../data/B3_HW.html")
