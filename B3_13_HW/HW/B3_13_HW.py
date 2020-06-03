@@ -7,7 +7,7 @@ def main():
             self.is_single = is_single
             self.children = []
             if klass is not None:
-                self.attributes["class"] = " ".join(klass)
+                self.attributes[" class"] = " ".join(klass)
             for attr, value in kwargs.items():
                 if "_" in attr:
                     attr = attr.replace("_", "-")
@@ -26,7 +26,7 @@ def main():
                 attrs.append('%s="%s"' % (attribute, value))
             attrs = " ".join(attrs)
             if len(self.children) > 0:
-                opening = f"<{self.tag} {attrs}>\n"
+                opening = f"<{self.tag}{attrs}>\n"
                 if self.text:
                     internal = "%s" % self.text
                 else:
