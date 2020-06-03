@@ -26,20 +26,20 @@ def main():
                 attrs.append('%s="%s"' % (attribute, value))
             attrs = " ".join(attrs)
             if len(self.children) > 0:
-                opening = f"<{self.tag} {attrs}>"
+                opening = f"<{self.tag} {attrs}>\n"
                 if self.text:
                     internal = "%s" % self.text
                 else:
                     internal = ""
                 for child in self.children:
                     internal += str(child)
-                ending = "</%s>" % self.tag
+                ending = "</%s>\n" % self.tag
                 return opening + internal + ending
             else:
                 if self.is_single:
-                    return f"<{self.tag} {attrs}/>"
+                    return f"<{self.tag} {attrs}/>\n"
                 else:
-                    return f"<{self.tag} {attrs}>{self.text}</{self.tag}>"
+                    return f"<{self.tag} {attrs}>{self.text}</{self.tag}>\n"
 
         def __exit__(self, *args, **kwargs):
             pass
@@ -57,7 +57,7 @@ def main():
             return self
 
         def __str__(self):
-            opening = "<html>"
+            opening = "<html>\n"
             internal = ""
             for child in self.childrens:
                 internal += str(child)
@@ -80,11 +80,11 @@ def main():
             return self
 
         def __str__(self):
-            opening = f"<{self.tag}>"
+            opening = f"<{self.tag}>\n"
             internal = ""
             for child in self.childrens:
                 internal += str(child)
-            ending = f"</{self.tag}>"
+            ending = f"</{self.tag}>\n"
             return opening + internal + ending
 
         def __exit__(self, *args):
@@ -113,6 +113,7 @@ def main():
                 body += div
 
             doc += body
+            print(doc)
 
 
 if __name__ == "__main__":
