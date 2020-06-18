@@ -15,6 +15,7 @@ class Album(Base):
     album = sa.Column(sa.TEXT)
 
 
+
 def parse_connection_string(connection_string):
     """Принимает на вход строку соединения connection_string и возвращает словарь с ее составными частями"""
     # dialect+driver://username:password@host:port/database
@@ -52,15 +53,20 @@ def main():
     Sessions = sessionmaker(engine)
     session = Sessions()
     albums = session.query(Album).all()
+    # bionic = Album(year=2010, artist="Christina Aguilera", genre="Rhythm and blues", album="Bionic")
+    # heaven_and_earth = Album(year=2010, artist="Kamasi Washington", genre="Jazz", album="Heaven and Earth")
+    # session.add(bionic)
+    # session.add(heaven_and_earth)
+    # session.commit()
     for album in albums:
         print(f"Группа {album.artist} записала альбом {album.album} в {album.year} году.")
 
-    parse_connection_string("sqlite3:///b4_7.sqlite33")
-    parse_connection_string("postgresql+psycopg22://admin2:12342@localhost2:22/b4_72")
-    parse_connection_string("postgresql+psycopg2://admin:1234@localhost/b4_7")
-    parse_connection_string("m2sql://a2dmin:21234/b24_7")
-    parse_connection_string("m2sql+mmm://admin:1234@localhost:112233/b4_7")
-    parse_connection_string("dialect+driver://username:password@host:port/database")
+    # parse_connection_string("sqlite3:///b4_7.sqlite33")
+    # parse_connection_string("postgresql+psycopg22://admin2:12342@localhost2:22/b4_72")
+    # parse_connection_string("postgresql+psycopg2://admin:1234@localhost/b4_7")
+    # parse_connection_string("m2sql://a2dmin:21234/b24_7")
+    # parse_connection_string("m2sql+mmm://admin:1234@localhost:112233/b4_7")
+    # parse_connection_string("dialect+driver://username:password@host:port/database")
 
 if __name__ == "__main__":
     main()
