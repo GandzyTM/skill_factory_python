@@ -7,7 +7,6 @@ Base = declarative_base()
 
 
 class Album(Base):
-    """Описывает структуру таблицы album для хранения записей музыкальной библиотеки"""
     __tablename__ = "album"
     id = sa.Column(sa.INTEGER, primary_key=True)
     year = sa.Column(sa.INTEGER)
@@ -18,8 +17,30 @@ class Album(Base):
 
 def parse_connection_string(connection_string):
     """Принимает на вход строку соединения connection_string и возвращает словарь с ее составными частями"""
-
-    return dict_parsed
+    # dialect+driver://username:password@host:port/database
+    dict_connection = {'dialect': "", 'driver':"",'username':"", 'password':"", 'host':"", 'port':"", 'database':"" }
+    # dialect + driver
+    if connection_string.split(":", maxsplit=1)[0].find("+") != -1:
+        dict_connection["dialect"] = connection_string.split("+")[0]
+        dict_connection["driver"] = connection_string.split("+")[1].split(":", maxsplit=1)[0]
+    else:
+        dict_connection["dialect"] = connection_string.split(":", maxsplit=1)[0]
+    # database
+    if connection_string.split("//")[1].find(":") != -1:
+        if connection_string.split("//")[1].find("@") != -1:
+            dict_connection["username"] = connection_string.split("//")[1].split("@")[0].split(":")[0]
+            dict_connection["password"] = connection_string.split("//")[1].split("@")[0].split(":")[1]
+            dict_connection["host"] = connection_string.split("//")[1].split("@")[1].split("/")[0].split(":")[0]
+            dict_connection["port"] = connection_string.split("//")[1].split("@")[1].split("/")[0].split(":")[1]
+            dict_connection["database"] = connection_string.split("//")[1].split("@")[1].split("/")[1]
+        else:
+            dict_connection["username"] = connection_string.split("//")[1].split(":")[0]
+            dict_connection["password"] = connection_string.split("//")[1].split(":")[1].split("/")[0]
+            dict_connection["database"] = connection_string.split("//")[1].split(":")[1].split("/")[1]
+    else:
+        dict_connection["database"] = connection_string.split("///")[1]
+    print(dict_connection)
+    return dict_connection
 
 
 def main():
@@ -34,6 +55,7 @@ def main():
     parse_connection_string("sqlite3:///b4_7.sqlite33")
     parse_connection_string("postgresql+psycopg22://admin2:12342@localhost2:22/b4_72")
     parse_connection_string("m2sql://a2dmin:21234/b24_7")
+    parse_connection_string("dialect+driver://username:password@host:port/database")
 
 if __name__ == "__main__":
     main()
