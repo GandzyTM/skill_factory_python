@@ -25,18 +25,20 @@ def parse_connection_string(connection_string):
         dict_connection["driver"] = connection_string.split("+")[1].split(":", maxsplit=1)[0]
     else:
         dict_connection["dialect"] = connection_string.split(":", maxsplit=1)[0]
-    # database
-    if connection_string.split("//")[1].find(":") != -1:
-        if connection_string.split("//")[1].find("@") != -1:
-            dict_connection["username"] = connection_string.split("//")[1].split("@")[0].split(":")[0]
-            dict_connection["password"] = connection_string.split("//")[1].split("@")[0].split(":")[1]
-            dict_connection["host"] = connection_string.split("//")[1].split("@")[1].split("/")[0].split(":")[0]
-            dict_connection["port"] = connection_string.split("//")[1].split("@")[1].split("/")[0].split(":")[1]
-            dict_connection["database"] = connection_string.split("//")[1].split("@")[1].split("/")[1]
+    # database + username + password + host + port
+    uphpd = connection_string.split("//")[1]
+    """uphpd - username, password, host, port, database"""
+    if uphpd.find(":") != -1:
+        if uphpd.find("@") != -1:
+            dict_connection["username"] = uphpd.split("@")[0].split(":")[0]
+            dict_connection["password"] = uphpd.split("@")[0].split(":")[1]
+            dict_connection["host"] = uphpd.split("@")[1].split("/")[0].split(":")[0]
+            dict_connection["port"] = uphpd.split("@")[1].split("/")[0].split(":")[1]
+            dict_connection["database"] = uphpd.split("@")[1].split("/")[1]
         else:
-            dict_connection["username"] = connection_string.split("//")[1].split(":")[0]
-            dict_connection["password"] = connection_string.split("//")[1].split(":")[1].split("/")[0]
-            dict_connection["database"] = connection_string.split("//")[1].split(":")[1].split("/")[1]
+            dict_connection["username"] = uphpd.split(":")[0]
+            dict_connection["password"] = uphpd.split(":")[1].split("/")[0]
+            dict_connection["database"] = uphpd.split(":")[1].split("/")[1]
     else:
         dict_connection["database"] = connection_string.split("///")[1]
     print(dict_connection)
