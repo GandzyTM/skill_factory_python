@@ -5,7 +5,7 @@ import sqlalchemy as sa
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
-DB_PATH = "sqlite:///../data/sql_sochi.sqlite3"
+DB_PATH = "sqlite:///../data/sochi_athletes.sqlite3"
 Base = declarative_base()
 
 
@@ -34,16 +34,18 @@ def connect_db():
     return session()
 
 
-def find_athlete(id, session):
+def find_athlete(session):
     user_id = input("Введите id пользователя: ")
-    query = session.query(User).filter(User.id == id)
+    query_id = session.query(User).get(user_id)
+    query = session.query(User).filter(User.id == user_id)
     users_cnt = query.count()
     user_ids = [user.id for user in query.all()]
-    return (users_cnt, user_ids)
+    print(query_id)
+    return users_cnt, user_ids
 
 
 def main():
-
+    find_athlete(connect_db())
 
 if __name__ == "__main__":
     main()
