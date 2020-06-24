@@ -5,7 +5,7 @@ import sqlalchemy as sa
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
-DB_PATH = "sqlite:///../data/sql_sochi.sqlite3"
+DB_PATH = "sqlite:///../data/sochi_athletes.sqlite3"
 Base = declarative_base()
 
 class User(Base):
@@ -15,20 +15,26 @@ class User(Base):
     last_name = sa.Column(sa.Text)
     gender = sa.Column(sa.Text)
     email = sa.Column(sa.Text)
-    birthdate = sa.Column(sa.Date)
+    birthdate = sa.Column(sa.Text)
     height = sa.Column(sa.Float)
 
 
 def request_data():
     print("Привет! Я запишу твои данные!")
-    first_name = input("Введите своё имя: ")
-    last_name = input("А теперь фамилию: ")
-    gender = input("Ваш пол: ")
-    email = input("Мне еще понадобится адрес твоей электронной почты: ")
-    birthdate_text = input("Введите вашу дату рождения в формате гггг-мм-дд: ")
-    birthdate = datetime.datetime.strptime(birthdate_text, '%Y-%m-%d')
-    height = input("Введите ваш рост в метрах: ")
-    user_id = str(uuid.uuid4())
+    # first_name = input("Введите своё имя: ")
+    # last_name = input("А теперь фамилию: ")
+    # gender = input("Ваш пол: ")
+    # email = input("Мне еще понадобится адрес твоей электронной почты: ")
+    # birthdate = input("Введите вашу дату рождения в формате гггг-мм-дд: ")
+    # # birthdate = datetime.datetime.strptime(birthdate_text, '%Y-%m-%d')
+    # height = input("Введите ваш рост в метрах: ")
+    first_name = "qwerwer"
+    last_name = "trterteeet"
+    gender = "Male"
+    email = "bvbcvbs@fdcdcc.com"
+    birthdate = "1982-02-12"
+    height = "1.8"
+    user_id = sa.Sequence.next_value("sqlite_sequnce") #uuid.uuid4().int
     user = User(
         id=user_id,
         first_name=first_name,
