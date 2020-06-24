@@ -1,4 +1,3 @@
-import uuid
 import datetime
 
 import sqlalchemy as sa
@@ -10,6 +9,9 @@ Base = declarative_base()
 
 
 class User(Base):
+    """
+    Описываем структуру таблицы USER
+    """
     __tablename__ = 'user'
     id = sa.Column(sa.String(36), primary_key=True)
     first_name = sa.Column(sa.Text)
@@ -21,6 +23,9 @@ class User(Base):
 
 
 class Athlete(Base):
+    """
+    Описываем структуру таблицы ATHLETE
+    """
     __tablename__ = 'athelete'
     id = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
     age = sa.Column(sa.Integer)
@@ -38,6 +43,9 @@ class Athlete(Base):
 
 
 def connect_db():
+    """
+    Коннект к БД
+    """
     engine = sa.create_engine(DB_PATH)
     Base.metadata.create_all(engine)
     session = sessionmaker(engine)
@@ -45,6 +53,14 @@ def connect_db():
 
 
 def find_athlete(user, session):
+    """
+    Производит поиск атлета, ближайшего по дате рождения к данному пользователю
+    и атлета, ближайшего по росту к данному пользователю.
+    Возвращает список с именами и целевыми значениями найденных спортсменов
+    :param user:
+    :param session:
+    :return:
+    """
     height_list = [athlete.height for athlete in session.query(Athlete).all()]
     list_of_height_absolute = []
     for height in height_list:
@@ -72,6 +88,12 @@ def find_athlete(user, session):
 
 
 def find_user(id, session):
+    """
+        Производит поиск пользователя в таблице user по заданному идентифекатору.
+    :param id:
+    :param session:
+    :return:
+    """
     user = []
     for id, height, birthdate in session.query(User.id, User.height, User.birthdate).filter(User.id == id):
         user.append(id)
