@@ -1,10 +1,8 @@
-import uuid
-import datetime
-
 import sqlalchemy as sa
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
+# расположение БД может быть другим
 DB_PATH = "sqlite:///../data/sochi_athletes.sqlite3"
 Base = declarative_base()
 
