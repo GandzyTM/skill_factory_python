@@ -44,44 +44,56 @@ def connect_db():
     return session()
 
 
-# TODO Напишите модуль find_athlete.py поиска ближайшего к пользователю атлета. Логика работы модуля такова:
-# запросить идентификатор пользователя;
-# если пользователь с таким идентификатором существует в таблице user, то вывести на экран двух атлетов: ближайшего по дате рождения к данному пользователю и ближайшего по росту к данному пользователю;
-# если пользователя с таким идентификатором нет, вывести соответствующее сообщение.
+def find_athlete(user, session):
+    height_list = [athlete.height for athlete in session.query(Athlete).all()]
+    list_of_height_absolute = []
+    for height in height_list:
+        if isinstance(height, float):  # проверяем валидность данных
+            list_of_height_absolute.append(abs(user[1] - height))
+        else:
+            list_of_height_absolute.append(200)
+    result_index = list_of_height_absolute.index(min(list_of_height_absolute))
+    target_h = height_list[result_index]
+    athlete_near_user_height = []
+    session.query(Athlete)
+    athlete_temp = session.query(Athlete).filter(Athlete.height == target_h).first()
+    athlete_near_user_height.append(athlete_temp.name)
+    athlete_near_user_height.append(athlete_temp.height)
+    birthdate_list = [athlete.birthdate for athlete in session.query(Athlete).all()]
+    user_bd = datetime.datetime.strptime(user[2], '%Y-%m-%d')
+    list_of_birthdate_absolute = [abs(user_bd - datetime.datetime.strptime(birthdate, '%Y-%m-%d')) for birthdate in
+                                  birthdate_list]
+    result_index = list_of_birthdate_absolute.index(min(list_of_birthdate_absolute))
+    target_bd = birthdate_list[result_index]
+    athlete_temp = session.query(Athlete).filter(Athlete.birthdate == target_bd).first()
+    athlete_near_user_height.append(athlete_temp.name)
+    athlete_near_user_height.append(athlete_temp.birthdate)
+    return athlete_near_user_height
 
-def find_athlete(session):
-    query = session.query(Athlete, User).filter(Athlete.height.between(User.height + '0.1', User.height - '0.1')).filter(Athlete.birthdate.between(User.birthdate + '2', User.birthdate - '2'))
-    athletes_count = query.count()
-    athletes_ids = [athlete_id for athlete_id in query.all()]
-    print(query)
-    return (athletes_ids, athletes_count)
 
-
-def user_exist(id, session):
-    if session.query(User).filter(User.id == id).count() == 1:
-        return True
+def find_user(id, session):
+    user = []
+    for id, height, birthdate in session.query(User.id, User.height, User.birthdate).filter(User.id == id):
+        user.append(id)
+        user.append(height)
+        user.append(birthdate)
+    if user:
+        result = find_athlete(user, session)
+        return f'Пользователь с идентификатором {user[0]}. Ближайший к пользователю спортсмен по росту: {result[0]}, его рост {result[1]}. ' \
+               f'Ближайший к пользователю спортсмен по дню рождения: {result[2]}, его день рождения {result[3]}'
     else:
-        return False
-
-
-def print_users_list(athlete_ids, count):
-    if athlete_ids:
-        print("Найдено атлетов: ", count)
-        for athlete_id in athlete_ids:
-            print("{}".format(athlete_id))
-    else:
-        print("Атлетов, примерно подходящих по параметрам, не найдено.")
+        return f"Пользователь с идетификатором {id} не найден."
 
 
 def main():
     session = connect_db()
-    user_id = input("Введите id пользователя: ")
-    user_exist(user_id, session)
-    if user_exist(user_id, session):
-        athlete_ids, count = find_athlete(session)
-        print_users_list(athlete_ids, count)
+    mode = input("Выбери режим.\n1 - поиск ближайшего к пользователю атлета\n")
+    if mode == "1":
+        user_id = input("Введите id пользователя: ")
+        text = find_user(user_id, session)
+        print(text)
     else:
-        print(f"Пользователя с идентификатором {user_id} не найдено.")
+        print("Некорректный режим")
 
 
 if __name__ == "__main__":
