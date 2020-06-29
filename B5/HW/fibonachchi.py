@@ -6,7 +6,7 @@ def fibonacci(n):
 
 
 def avg_decorator(num_exec):
-    """Декоратор с аргументом num_exec для основного декоратора"""
+    """B5.9 HW Декоратор с аргументом num_exec для основного декоратора"""
     def avg_time_exec(function):
         import time
         from tqdm import tqdm
