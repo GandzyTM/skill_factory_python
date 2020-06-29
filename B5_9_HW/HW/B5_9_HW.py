@@ -1,8 +1,6 @@
 import time
 from tqdm import tqdm
 
-DB_PATH = "sqlite:///../data/sochi_athletes.sqlite3"
-
 
 class Decorator_avg:
     """B5_9_HW.9 HW with * & **"""
