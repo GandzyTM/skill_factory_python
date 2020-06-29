@@ -1,18 +1,16 @@
 import time
+import sqlite3
 from tqdm import tqdm
+
+DB_PATH = "sqlite:///../data/sochi_athletes.sqlite3"
 
 
 class Decorator_avg:
     """B5.9 HW with * & **"""
 
-    def __init__(self, num_exec):
+    def __init__(self, num_exec, db_name):
         self.num_exec = num_exec
-
-    def __enter__(self):
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        pass
+        self.db_name = db_name
 
     def __call__(self, function):
         def wrapper(*args):
@@ -28,6 +26,13 @@ class Decorator_avg:
             return "Выполнение задания в среднем занимает %.3f секунд" % avg_time
 
         return wrapper
+
+    def __enter__(self):
+        self.conn = sqlite3.connect(self.db_name)
+        return self.conn
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.conn.close()
 
 
 def fibonacci(n):
@@ -59,7 +64,7 @@ def avg_decorator(num_exec):
 
 
 # @avg_decorator(5) # передаем количество проходов функции декоратору (как функция)
-@Decorator_avg(5)  # декоратор как класс
+@Decorator_avg(5, DB_PATH)  # декоратор как класс (передаем кол-во запусков функции find_fib_mus и
 def find_fib_nums(max_num_of_range, max_num_of_end):
     result = 0
     for i in range(max_num_of_range):
@@ -71,11 +76,5 @@ def find_fib_nums(max_num_of_range, max_num_of_end):
     return result
 
 
-def main():
-    print(find_fib_nums(50, 10000000))
-    # передаем 1 аргументом до какой цифры функция Фибоначчи будет проводить свои действия
-    # 2 аргументом передается лимит суммы получающихся чисел
-
-
 if __name__ == "__main__":
-    main()
+    print(find_fib_nums(50, 10000000))
