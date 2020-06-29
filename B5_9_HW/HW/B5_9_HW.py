@@ -1,16 +1,14 @@
 import time
-import sqlite3
 from tqdm import tqdm
 
 DB_PATH = "sqlite:///../data/sochi_athletes.sqlite3"
 
 
 class Decorator_avg:
-    """B5.9 HW with * & **"""
+    """B5_9_HW.9 HW with * & **"""
 
     def __init__(self, num_exec):
         self.num_exec = num_exec
-        self.db_name = db_name
 
     def __call__(self, function):
         def wrapper(*args):
@@ -44,7 +42,7 @@ def fibonacci(n):
 
 
 def avg_decorator(num_exec):
-    """B5.9 HW Декоратор с аргументом num_exec для основного декоратора"""
+    """B5_9_HW.9 HW Декоратор с аргументом num_exec для основного декоратора"""
 
     def avg_time_exec(function):
         def wrapper(arg1, arg2):
