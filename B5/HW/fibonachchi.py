@@ -1,7 +1,10 @@
 import time
 from tqdm import tqdm
+
+
 class Decorator_avg:
     """B5.9 HW with * & **"""
+
     def __init__(self, num_exec):
         self.num_exec = num_exec
 
@@ -36,6 +39,7 @@ def fibonacci(n):
 
 def avg_decorator(num_exec):
     """B5.9 HW Декоратор с аргументом num_exec для основного декоратора"""
+
     def avg_time_exec(function):
         def wrapper(arg1, arg2):
             avg_time = 0
@@ -55,7 +59,7 @@ def avg_decorator(num_exec):
 
 
 # @avg_decorator(5) # передаем количество проходов функции декоратору (как функция)
-@Decorator_avg(5) # декоратор как класс
+@Decorator_avg(5)  # декоратор как класс
 def find_fib_nums(max_num_of_range, max_num_of_end):
     result = 0
     for i in range(max_num_of_range):
