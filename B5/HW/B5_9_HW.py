@@ -64,7 +64,7 @@ def avg_decorator(num_exec):
 
 
 # @avg_decorator(5) # передаем количество проходов функции декоратору (как функция)
-@Decorator_avg(5, DB_PATH)  # декоратор как класс (передаем кол-во запусков функции find_fib_mus и
+@Decorator_avg(5, DB_PATH)  # декоратор как класс (передаем кол-во запусков функции find_fib_nums и путь к БД)
 def find_fib_nums(max_num_of_range, max_num_of_end):
     result = 0
     for i in range(max_num_of_range):
