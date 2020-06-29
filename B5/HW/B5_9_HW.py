@@ -8,7 +8,7 @@ DB_PATH = "sqlite:///../data/sochi_athletes.sqlite3"
 class Decorator_avg:
     """B5.9 HW with * & **"""
 
-    def __init__(self, num_exec, db_name):
+    def __init__(self, num_exec):
         self.num_exec = num_exec
         self.db_name = db_name
 
@@ -28,11 +28,12 @@ class Decorator_avg:
         return wrapper
 
     def __enter__(self):
-        self.conn = sqlite3.connect(self.db_name)
-        return self.conn
+        self.start = time.time()
+        return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        self.conn.close()
+        self.end = time.time()
+        self.job_time = self.end - self.start
 
 
 def fibonacci(n):
@@ -64,7 +65,7 @@ def avg_decorator(num_exec):
 
 
 # @avg_decorator(5) # передаем количество проходов функции декоратору (как функция)
-@Decorator_avg(5, DB_PATH)  # декоратор как класс (передаем кол-во запусков функции find_fib_nums и путь к БД)
+@Decorator_avg(5)  # декоратор как класс (передаем кол-во запусков функции find_fib_nums и путь к БД)
 def find_fib_nums(max_num_of_range, max_num_of_end):
     result = 0
     for i in range(max_num_of_range):
@@ -78,3 +79,8 @@ def find_fib_nums(max_num_of_range, max_num_of_end):
 
 if __name__ == "__main__":
     print(find_fib_nums(50, 10000000))
+
+    with Decorator_avg(2) as Decorator_avg:
+        for i in range(1000000):
+            pass
+    print(Decorator_avg.job_time)
