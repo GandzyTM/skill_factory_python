@@ -26,13 +26,6 @@ def request_data():
     birthdate = input("Введите вашу дату рождения в формате гггг-мм-дд: ")
     # birthdate = datetime.datetime.strptime(birthdate_text, '%Y-%m-%d')
     height = input("Введите ваш рост в метрах: ")
-    # first_name = "qwerwer"
-    # last_name = "trterteeet"
-    # gender = "Male"
-    # email = "bvbcvbs@fdcdcc.com"
-    # birthdate = "1982-02-12"
-    # height = "1.8"
-    # user_id = sa.Sequence.next_value("sqlite_sequnce") #uuid.uuid4().int
     user = User(
         # id=user_id,
         first_name=first_name,
