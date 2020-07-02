@@ -55,7 +55,7 @@ def add(year, artist, genre, album):
     # создаем сессию
     session = connect_db()
     # если такой альбом существует в списке, который нам передает функция find то возвращаем False
-    if album in find(artist):
+    if album and artist in find(artist):
         return False
     else:
         # в противном случае (True) создаем объект Album

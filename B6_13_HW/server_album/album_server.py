@@ -1,5 +1,5 @@
 import album
-from bottle import HTTPError
+from bottle import HTTPError, request
 from bottle import route
 from bottle import run
 
@@ -23,40 +23,32 @@ def albums(artist):
         message = "Альбомов {} не найдено".format(artist)
         result = HTTPError(404, message)
     else:
+        # создаем список наименований альбомов
         album_names = [album.album for album in albums_list]
-        # количество и список альбомов, которые записал artist
-
+        # выводим количество которые записал artist
         result = "Список из {} {}: <br>".format(make_end(len(albums_list)), artist)
+        # выводим названия самих альбомов
         result += " <br>".join(album_names)
     return result
 
 
-# def save_album(album_data):
-#     artist = album_data["artist"]
-#     album = album_data["album"]
-#     filename = "{}-{}.json".format(artist, album)
-#
-#     with open(filename, "w") as fd:
-#         json.dump(album_data, fd)
-#     return filename
+@route("/albums/", method="POST")
+def add_album():
+    """Веб-сервер принимает POST-запросы по адресу /albums/ и сохраняет переданные пользователем
+    данные об альбоме. Данные передаются в формате веб-формы. Если пользователь пытается передать
+    данные об альбоме, который уже есть в базе данных, обработчик запроса отвечает HTTP-ошибкой 409
+    и выводит соответствующее сообщение."""
+    year = request.forms.get("year")
+    artist = request.forms.get("artist")
+    genre = request.forms.get("genre")
+    albums = request.forms.get("album")
 
+    add_to_db = album.add(year, artist, genre, albums)
 
-# @route("/albums/", method="POST")
-# def album():
-#     """Веб-сервер принимает POST-запросы по адресу /albums/ и сохраняет переданные пользователем
-#     данные об альбоме. Данные передаются в формате веб-формы. Если пользователь пытается передать
-#     данные об альбоме, который уже есть в базе данных, обработчик запроса отвечает HTTP-ошибкой 409
-#     и выводит соответствующее сообщение."""
-#     album_data = {
-#         "artist": request.forms.get("artist"),
-#         "genre": request.forms.get("genre"),
-#         "album": request.forms.get("album")
-#     }
-#     resource_path = save_album(album_data)
-#     print("User saved at: ", resource_path)
-#
-#     return "Данные успешно сохранены"
-
+    if add_to_db:
+        return "Данные записаны в БД"
+    else:
+        return HTTPError(409, "Альбом {} {} уже есть в БД".format(albums, artist))
 
 if __name__ == "__main__":
     run(host="localhost", port=8080, debug=True)
