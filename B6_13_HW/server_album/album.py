@@ -36,7 +36,7 @@ class Album(Base):
     def validate_year(self, key, year):
         if not year:
             raise AssertionError("Год не может быть пустым")
-        if len(year) < 4 or len(year) > 4:
+        if len(year) < 4 or len(year) > 4 or not isinstance(int(year), int):
             raise AssertionError("Неверно указан год")
         return year
 
@@ -71,14 +71,14 @@ def connect_db():
     return session()
 
 
-def find(album):
+def find(artist):
     """
     Находит все альбомы в базе данных по заданному полю artist
     """
     # создаем сессию
     session = connect_db()
     # делаем запрос в БД типа (select * from album where artist=? or album=?)
-    albums = session.query(Album.album).filter(Album.album == album).all()
+    albums = session.query(Album.album).filter(Album.artist == artist).all()
     # возвращаем список
     return albums
 
@@ -87,8 +87,11 @@ def add(year, artist, genre, album):
     """Добавляет альбом и данные о нем в БД"""
     # создаем сессию
     session = connect_db()
+    album_exists = session.query(Album).filter(Album.album == album, Album.artist == artist).first()
+    if album_exists is not None:
+        raise Exception("Такой альбом уже находится в ДБ")
     # если такой альбом существует в списке, который нам передает функция find то возвращаем False
-    if len(find(album)) > 0:
+    if len(find(artist)) > 0:
         return False
     else:
         # в ином случае (True) создаем объект Album
