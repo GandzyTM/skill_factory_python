@@ -1,6 +1,6 @@
 import sqlalchemy as sa
-from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker, validates
 
 try:
     # способ соединения с БД
@@ -10,6 +10,7 @@ except FileNotFoundError as err:
 
 # описываем базовый класс моделей таблиц
 Base = declarative_base()
+
 
 class Album(Base):
     """
@@ -23,6 +24,37 @@ class Album(Base):
     artist = sa.Column(sa.TEXT)
     genre = sa.Column(sa.TEXT)
     album = sa.Column(sa.TEXT)
+
+    def __init__(self, year, artist, genre, album):
+        self.year = year
+        self.artist = artist
+        self.genre = genre
+        self.album = album
+
+    @validates('year')
+    # проводим валидацию передаваемых данных в поле year перед записью в БД
+    def validate_year(self, key, year):
+        if not year:
+            raise AssertionError("Год не может быть пустым")
+        if len(year) < 4 or len(year) > 4:
+            raise AssertionError("Неверно указан год")
+        return year
+
+    @validates('artist')
+    # проводим валидацию передаваемых данных в поле artist перед записью в БД
+    def validate_artist(self, key, artist):
+        if not artist:
+            raise AssertionError("Поле артист не может быть пустым")
+        return artist
+
+    @validates('album')
+    # проводим валидацию передаваемых данных в поле album перед записью в БД
+    def validate_album(self, key, album):
+        if not album:
+            raise AssertionError("Поле альбом не может быть пустым")
+        if not isinstance(album, str):
+            raise AssertionError("Поле альбом принимает только строковые значения")
+        return album
 
 
 def connect_db():
@@ -39,26 +71,27 @@ def connect_db():
     return session()
 
 
-def find(artist):
+def find(album):
     """
-    Находит все альбомы в базе данных по заданному артисту
+    Находит все альбомы в базе данных по заданному полю artist
     """
     # создаем сессию
     session = connect_db()
-    # делаем запрос в БД типа (select * from album where artist=?)
-    albums = session.query(Album).filter(Album.artist == artist).all()
+    # делаем запрос в БД типа (select * from album where artist=? or album=?)
+    albums = session.query(Album.album).filter(Album.album == album).all()
     # возвращаем список
     return albums
+
 
 def add(year, artist, genre, album):
     """Добавляет альбом и данные о нем в БД"""
     # создаем сессию
     session = connect_db()
     # если такой альбом существует в списке, который нам передает функция find то возвращаем False
-    if album and artist in find(artist):
+    if len(find(album)) > 0:
         return False
     else:
-        # в противном случае (True) создаем объект Album
+        # в ином случае (True) создаем объект Album
         add_album = Album(year=year, artist=artist, genre=genre, album=album)
         # добавляем объект Album в БД
         session.add(add_album)

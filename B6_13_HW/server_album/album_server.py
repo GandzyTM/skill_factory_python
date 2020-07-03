@@ -38,17 +38,18 @@ def add_album():
     данные об альбоме. Данные передаются в формате веб-формы. Если пользователь пытается передать
     данные об альбоме, который уже есть в базе данных, обработчик запроса отвечает HTTP-ошибкой 409
     и выводит соответствующее сообщение."""
+    # запрос данных из формы
     year = request.forms.get("year")
     artist = request.forms.get("artist")
     genre = request.forms.get("genre")
     albums = request.forms.get("album")
-
+    # вызов функции добавления объекта в БД
     add_to_db = album.add(year, artist, genre, albums)
-
     if add_to_db:
         return "Данные записаны в БД"
     else:
-        return HTTPError(409, "Альбом {} {} уже есть в БД".format(albums, artist))
+        return HTTPError(409, "Альбом {} уже есть в БД".format(albums, artist))
+
 
 if __name__ == "__main__":
     run(host="localhost", port=8080, debug=True)
