@@ -1,3 +1,5 @@
+import sys
+sys.path.append('B6_13_HW\server_album')
 import album
 from bottle import HTTPError, request
 from bottle import route

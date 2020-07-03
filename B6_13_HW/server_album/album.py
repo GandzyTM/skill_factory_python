@@ -59,7 +59,7 @@ class Album(Base):
 
 def connect_db():
     """
-    Устанавливает соединение к базе данных, создает таблицы, если их еще нет и возвращает объект сессии 
+    Устанавливает соединение к базе данных, создает таблицы, если их еще нет и возвращает объект сессии
     """
     # создаем соединение к базе данных
     engine = sa.create_engine(DB_PATH)
@@ -82,16 +82,22 @@ def find(artist):
     # возвращаем список
     return albums
 
+def find_album_artist(album, artist):
+    session = connect_db()
+    albums_artist = session.query(Album).filter(Album.artist == artist, Album.album == album).all()
+    return albums_artist
+
 
 def add(year, artist, genre, album):
     """Добавляет альбом и данные о нем в БД"""
     # создаем сессию
     session = connect_db()
-    album_exists = session.query(Album).filter(Album.album == album, Album.artist == artist).first()
+    album_exists = session.query(Album).filter(Album.album == album).first()
     if album_exists is not None:
-        raise Exception("Такой альбом уже находится в ДБ")
+        raise Exception("Альбом {} уже существует в БД".format(album))
+
     # если такой альбом существует в списке, который нам передает функция find то возвращаем False
-    if len(find(artist)) > 0:
+    if len(find_album_artist(album, artist)) > 0:
         return False
     else:
         # в ином случае (True) создаем объект Album
