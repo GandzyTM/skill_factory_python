@@ -21,7 +21,7 @@ class Album(Base):
     # задаем необходимые колонки
     id = sa.Column(sa.INTEGER, primary_key=True)
     year = sa.Column(sa.INTEGER)
-    artist = sa.Column(sa.TEXT)
+    artist = sa.Column(sa.String)
     genre = sa.Column(sa.TEXT)
     album = sa.Column(sa.TEXT)
 
@@ -90,6 +90,12 @@ def find_album_artist(album, artist):
 
 def add(year, artist, genre, album):
     """Добавляет альбом и данные о нем в БД"""
+    # проверяем валидность типов данных
+    assert isinstance(year, int)
+    assert isinstance(artist, str)
+    assert isinstance(genre, str)
+    assert isinstance(album, str)
+
     # создаем сессию
     session = connect_db()
     album_exists = session.query(Album).filter(Album.album == album).first()
